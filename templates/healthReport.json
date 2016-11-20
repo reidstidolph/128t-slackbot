@@ -1,0 +1,74 @@
+{
+    "attachments": [
+        {
+            "fallback": "[[string]]",
+            "color": "#00adef",
+            "pretext": "[[router-name]]",
+            "author_name": "128T Router Health Report",
+            "author_icon": "http://i.imgur.com/oT7ZCR4.png",
+            "title": "Node: [[node-name]]",
+            "fields": [
+                {
+                    "title": "Host CPU",
+                    "value": "[[num]]%",
+                    "short": true
+                },
+                {
+                    "title": "Data Plane CPU",
+                    "value": "[[num]]%",
+                    "short": true
+                },
+                {
+                    "title": "Memory",
+                    "value": "[[num]]% of [[num]]G",
+                    "short": true
+                },
+                {
+                    "title": "Disk",
+                    "value": "[[num]]% of [[num]]G",
+                    "short": true
+                },
+                {
+                    "title": "Traffic",
+                    "value": "[[num]] [[bw-unit]], [[num]] active sessions",
+                    "short": false
+                }
+            ]
+        },
+        {
+            "fallback": "Required plain-text summary of the attachment.",
+            "color": "#00adef",
+            "title": "Node: [[node-name]]",
+            "fields": [
+                {
+                    "title": "Host CPU",
+                    "value": "[[num]]%",
+                    "short": true
+                },
+                {
+                    "title": "Data Plane CPU",
+                    "value": "[[numa]]%",
+                    "short": true
+                },
+                {
+                    "title": "Memory",
+                    "value": "[[num]]% of [[num]]G",
+                    "short": true
+                },
+                {
+                    "title": "Disk",
+                    "value": "[[num]]% of [[num]]G",
+                    "short": true
+                },
+                {
+                    "title": "Traffic",
+                    "value": "[[num]] [[bw-unit]], [[num]] active sessions",
+                    "short": false
+                }
+            ],
+            "footer": "Health Report",
+            "footer_icon": "http://imgur.com/qI8nL1X.png",
+            "ts": 123456789
+        }
+    ]
+}

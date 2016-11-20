@@ -1,0 +1,14 @@
+{
+  "name": "rest-node-watcher",
+  "version": "1.0.0",
+  "description": "App to watch 128T nodes",
+  "main": "t128-slackbot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Reid Stidolph",
+  "dependencies" :
+  { 
+    "node-rest-client" : "2.0.1"
+  }
+}
