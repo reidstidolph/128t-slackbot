@@ -12,16 +12,27 @@
 // ./t128-slackbot-config.json
 //
 
-var config = require("./slackbot-config.json");
 var slack = require("./lib/slack.js");
 var routerConfig = {};
 var t128 = require("./lib/t128-router.js");
 var healthReport = require("./lib/healthReport.js");
 var alarm = require("./lib/alarm.js");
+try	{var config = require("./slackbot-config.json");}
+catch(err) {
+    console.log("\nError with the 'slackbot-config.json' file.");
+    console.log("You may not have set it up correctly.");
+    console.log("Make sure the file exists in the root of this");
+    console.log("app directory. See the sample-config.json for an"); 
+    console.log("example 'slackbot-config.json'. \n\n");
+    process.exit(1);
+}
+
 
 function handleNodeResponse(data, response) {
     var outputData = healthReport(data);
-    slack.send(outputData);
+    config.slack.reportChannels.forEach(function(channel) {
+    	slack.send(outputData, channel, config.slack.slackUsername);
+    })
 }
 
 function handleAlarmResponse(data, response) {
@@ -30,8 +41,6 @@ function handleAlarmResponse(data, response) {
     console.log(outputString);
     //slack.send(outputString);
 }
-
-//t128.getData("GET", "/router/{router}/node", handle128tResponse);
 
 t128.initialize();
 t128.event.on("initialized", function() {
