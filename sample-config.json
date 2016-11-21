@@ -1,0 +1,31 @@
+{  
+   "t128Control":{  
+      "api":"https://<SOME_128T_ROUTER_HOST>/api/v1",
+      "username":"<SOME_128T_ROUTER_USER>",
+      "password":"<SOME_128T_ROUTER_PASSWORD>"
+   },
+   "slack":{  
+      "webhookUrl":"https://hooks.slack.com/services/<SOME_SLACK_WEBHOOK_RESOURCE>",
+      "slackUsername":"<SOME_NAME>",
+      "alarmChannels":[  
+         "@<SOME_SLACK_USER>",
+         "#<SOME_SLACK_CHANNEL>"
+      ],
+      "reportChannels":[  
+         "#<SOME_SLACK_CHANNEL>",
+         "@<SOME_SLACK_USER>"
+      ],
+      "colors":{  
+         "default":"#00adef",
+         "INFO":"#00b050",
+         "MINOR":"#ffea00",
+         "MAJOR":"#ff9300",
+         "CRITICAL":"#d0021b"
+      }
+   },
+   "timers":{  
+      "alarmPollInterval":5,
+      "alarmSuppressCount":20,
+      "healthReportInterval":240
+   }
+}
