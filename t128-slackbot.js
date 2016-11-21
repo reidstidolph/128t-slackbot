@@ -36,15 +36,11 @@ function handleNodeResponse(data, response) {
 }
 
 function handleAlarmResponse(data, response) {
-    console.log(typeof(data));
     var outputString = data[0].severity + " ALARM!:  " + data[0].message;
-    console.log(outputString);
-    //slack.send(outputString);
 }
 
 t128.initialize();
 t128.event.on("initialized", function() {
     t128.getData("GET", "/router/{router}/node", handleNodeResponse);
-    //t128.getData("GET", "/router/{router}/alarm", handleAlarmResponse);
 });
 t128.event.on("error", function(e){console.log(e)});
