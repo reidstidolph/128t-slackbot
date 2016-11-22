@@ -36,7 +36,7 @@ function handleNodeResponse(data, response) {
 }
 
 function handleAlarmResponse(data, response) {
-    var outputString = data[0].severity + " ALARM!:  " + data[0].message;
+
 }
 
 t128.initialize();

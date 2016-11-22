@@ -1,23 +1,49 @@
 {
     "attachments": [
         {
-            "fallback": "[[string]]",
+            "fallback": "[[router name]]] ALARM",
+            "color": "#373a36",
+            "pretext": "[[router name]]] ALARM",
+            "author_name": "128T Router Alarm Report",
+            "author_icon": "http://i.imgur.com/XMeBFfv.png"
+        },
+        {
             "color": "#d0021b",
-            "pretext": "ALARM",
-            "author_name": "[[router-name]]",
-            "title": "Slack API Documentation",
-            "text": "Optional text that appears within the attachment",
+            "title": "[[Severity]]",
             "fields": [
                 {
-                    "title": "Priority",
-                    "value": "High",
-                    "short": false
+                    "title": "Node: [[node name]]",
+                    "value": "Message",
+                    "short": true
+                },
+                {
+                    "title": "Node: [[node name]]",
+                    "value": "Message",
+                    "short": true
                 }
-            ],
-            "image_url": "http://my-website.com/path/to/image.jpg",
-            "thumb_url": "http://example.com/path/to/thumb.png",
+            ]
+        },
+                {
+            "color": "#ffea00",
+            "title": "[[Severity]]",
+            "fields": [
+                {
+                    "title": "Node: [[node name]]",
+                    "value": "Message",
+                    "short": true
+                },
+                {
+                    "title": "Node: [[node name]]",
+                    "value": "Message",
+                    "short": true
+                }
+            ]
+        },
+        {
+            "color": "#373a36",
+            "fallback" : "Alarm Report",
             "footer": "Alarm Report",
-            "footer_icon": "http://imgur.com/XMeBFfv.png",
+            "footer_icon": "http://imgur.com/qI8nL1X.png",
             "ts": 123456789
         }
     ]
