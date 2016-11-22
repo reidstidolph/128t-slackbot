@@ -1,0 +1,66 @@
+[
+  {
+    "category": "Interface",
+    "message": "interface fail",
+    "node": "node-bar",
+    "severity": "INFO",
+    "source": "string",
+    "time": "2016-11-21T22:32:00.031Z"
+  },
+  {
+    "category": "Platform",
+    "message": "platform fail",
+    "node": "node-foo",
+    "severity": "CRITICAL",
+    "source": "string",
+    "time": "2016-11-21T22:32:00.031Z"
+  },
+  {
+    "category": "Interface",
+    "message": "Interfaceface fail",
+    "node": "node-bar",
+    "severity": "MAJOR",
+    "source": "string",
+    "time": "2016-11-21T22:32:00.031Z"
+  },
+  {
+    "category": "Process",
+    "message": "process fail",
+    "node": "node-foo",
+    "severity": "MINOR",
+    "source": "string",
+    "time": "2016-11-21T22:32:00.031Z"
+  },
+  {
+    "category": "System",
+    "message": "system fail",
+    "node": "node-bar",
+    "severity": "MAJOR",
+    "source": "string",
+    "time": "2016-11-21T22:32:00.031Z"
+  },
+  {
+    "category": "Process",
+    "message": "process fail",
+    "node": "node-foo",
+    "severity": "CRITICAL",
+    "source": "string",
+    "time": "2016-11-21T22:32:00.031Z"
+  },
+  {
+    "category": "None",
+    "message": "not sure",
+    "node": "node-foo",
+    "severity": "FOO",
+    "source": "string",
+    "time": "2016-11-21T22:32:00.031Z"
+  },
+  {
+    "category": "Interface",
+    "message": "interface fail",
+    "node": "node-bar",
+    "severity": "CRITICAL",
+    "source": "string",
+    "time": "2016-11-21T22:32:00.031Z"
+  }
+]
