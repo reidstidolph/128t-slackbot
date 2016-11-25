@@ -7,8 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Reid Stidolph",
-  "dependencies" :
-  { 
-    "node-rest-client" : "2.0.1"
+  "dependencies": {
+    "node-rest-client": "2.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.10.2",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1"
   }
 }
