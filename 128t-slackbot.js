@@ -47,9 +47,20 @@ function handleNodeResponse(error, data, response) {
     }
 }
 
-function handleAlarmResponse(data, response) {
-
+function handleAlarmResponse(error, data, response) {
+    if (error) {
+        process.stdout.write(`Failed to get alarms: ${error}\n`);
+    } else {
+        if (data.length > 0) {
+            // got alarms
+            var outputData = alarm(data);
+            config.slack.alarmChannels.forEach(function(channel) {
+                slack.send(outputData, channel, config.slack.slackUsername);
+            })
+        }
+    }
 }
 
 
 t128.getData("GET", "/router/{router}/node", handleNodeResponse);
+setTimeout(()=> {t128.getData("GET", "/router/{router}/alarm", handleAlarmResponse);}, 5000)
