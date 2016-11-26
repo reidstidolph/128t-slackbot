@@ -1,4 +1,4 @@
-/*jslint node: true */
+/*jshint node: true */
 "use strict";
 
 //
@@ -27,24 +27,29 @@ catch(err) {
 }
 var slack = require("./lib/slack.js");
 var routerConfig = {};
-var t128 = require("./lib/t128-router.js");
+var t128 = require("./lib/t128.js");
 var healthReport = require("./lib/healthReport.js");
 var alarm = require("./lib/alarm.js");
 
 
-function handleNodeResponse(data, response) {
-    var outputData = healthReport(data);
-    config.slack.reportChannels.forEach(function(channel) {
-    	slack.send(outputData, channel, config.slack.slackUsername);
-    })
+function handleNodeResponse(error, data, response) {
+
+    if (error) {
+        process.stdout.write(`Failed with: ${error}\n`);
+        config.slack.reportChannels.forEach(function(channel) {
+            slack.send("128T may be *OFFLINE*!\nFailure description:```" + error + "```", channel, config.slack.slackUsername);
+        })
+    } else {
+        var outputData = healthReport(data);
+        config.slack.reportChannels.forEach(function(channel) {
+            slack.send(outputData, channel, config.slack.slackUsername);
+        })
+    }
 }
 
 function handleAlarmResponse(data, response) {
 
 }
 
-t128.initialize();
-t128.event.on("initialized", function() {
-    t128.getData("GET", "/router/{router}/node", handleNodeResponse);
-});
-t128.event.on("error", function(e){console.log(e)});
+
+t128.getData("GET", "/router/{router}/node", handleNodeResponse);
