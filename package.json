@@ -1,19 +1,21 @@
 {
-  "name": "rest-node-watcher",
+  "name": "128t-slackbot",
   "version": "1.0.0",
-  "description": "App to watch 128T nodes",
+  "description": "Slack bot to watch and report on 128T nodes",
   "main": "t128-slackbot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Reid Stidolph",
-  "dependencies": {
-    "node-rest-client": "2.0.1"
+  "author": "Reid Stidolph <rstidolph@128technology.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://rstidolph@bitbucket.org/rstidolph/128t-slackbot.git"
   },
-  "devDependencies": {
-    "eslint": "^3.10.2",
-    "eslint-config-standard": "^6.2.1",
-    "eslint-plugin-promise": "^3.4.0",
-    "eslint-plugin-standard": "^2.0.1"
+  "dependencies": {
+    "forever-monitor": "1.7.x"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">= 0.8.x"
   }
 }
