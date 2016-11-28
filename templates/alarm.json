@@ -1,43 +1,53 @@
 {
     "attachments": [
         {
-            "fallback": "[[router name]]] ALARM",
+            "fallback": "my-router ALARM",
             "color": "#373a36",
-            "pretext": "[[router name]]] ALARM",
-            "author_name": "128T Router Alarm Report",
+            "pretext": "my-router ALARM",
+            "author_name": "128T Router New Alarm Report",
             "author_icon": "http://i.imgur.com/XMeBFfv.png"
         },
         {
             "color": "#d0021b",
-            "title": "[[Severity]]",
+            "title": "--CRITICAL--",
             "fields": [
                 {
-                    "title": "Node: [[node name]]",
-                    "value": "Message",
+                    "title": "Node: si",
+                    "value": "Memory usage at %90",
                     "short": true
                 },
                 {
-                    "title": "Node: [[node name]]",
-                    "value": "Message",
+                    "title": "Node: si",
+                    "value": "Interface int10 down",
+                    "short": true
+                },
+                {
+                    "title": "Node: si",
+                    "value": "Disk usage at %90",
+                    "short": true
+                },
+                {
+                    "title": "...plus 3 more.",
+                    "value": "See router for more details.",
                     "short": true
                 }
             ]
         },
-                {
+        {
             "color": "#ffea00",
-            "title": "[[Severity]]",
+            "title": "--MINOR--",
             "fields": [
                 {
-                    "title": "Node: [[node name]]",
-                    "value": "Message",
-                    "short": true
-                },
-                {
-                    "title": "Node: [[node name]]",
-                    "value": "Message",
+                    "title": "Node: si",
+                    "value": "Process restart",
                     "short": true
                 }
             ]
+        },
+        {
+            "color": "#00ADEF",
+            "title": "Previously reported alarms",
+            "text": "4 still active\n3 cleared"
         },
         {
             "color": "#373a36",
