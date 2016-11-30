@@ -31,10 +31,17 @@ var t128 = require("./lib/t128.js");
 var healthReport = require("./lib/healthReport.js");
 var alarm = require("./lib/alarm.js");
 
+// set up and send dummy alarm data
 var testAlarm = require("./templates/testAlarmData.json");
 var alarmOutput = alarm(testAlarm);
-slack.send(alarmOutput);
+config.slack.alarmChannels.forEach(function(channel) {
+    slack.send(alarmOutput, channel, config.slack.slackUsername);
+})
 
+// set up and send dummy health report data
 var testNode = require("./templates/testNodeData.json");
 var healthReportOutput = healthReport(testNode);
-slack.send(healthReportOutput);
+
+config.slack.reportChannels.forEach(function(channel) {
+    slack.send(healthReportOutput, channel, config.slack.slackUsername);
+})
