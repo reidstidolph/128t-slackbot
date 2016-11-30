@@ -27,7 +27,7 @@ catch(err) {
 }
 var slack = require("./lib/slack.js");
 var routerConfig = {};
-var t128 = require("./lib/t128-router.js");
+var t128 = require("./lib/t128.js");
 var healthReport = require("./lib/healthReport.js");
 var alarm = require("./lib/alarm.js");
 
