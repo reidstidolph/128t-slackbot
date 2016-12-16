@@ -1,59 +1,99 @@
-/*jshint node: true */
-"use strict";
+#!/usr/bin/env node
 
-//
-// This NodeJS application that uses a 128T Router and
-// outgoing Slack webhooks, to post router information
-// to Slack.
-//
-// It accesses the 128T REST API for to retreive
-//data, and sends data to Slack.
-//
-// Configuration of this app is done using
-// ./t128-slackbot-config.json
-//
+try {
+	var colors = require('colors'),
+		cproc = require('child_process').spawn,
+		argv = require('minimist')(process.argv.slice(2)),
+		fs = require('fs'),
+		path = require('path');
+} catch (e) {
+	if (e.code === 'MODULE_NOT_FOUND') {
+		process.stdout.write('128T-Slackbot could not be started because it\'s dependencies have not been installed.\n');
+		process.stdout.write('Please ensure that you have executed "npm install --production" prior to running 128T-Slackbot.\n\n');
+		process.stdout.write('For more information, please see: https://docs.128t-slackbot.org/en/latest/installing/os.html\n\n');
+		process.stdout.write('Could not start: ' + e.code + '\n');
 
-try {var config = require("./slackbot-config.json");}
-catch(err) {
-    process.stdout.write(`\n${err}\n`);
-    process.stdout.write(`
-        Something is wrong with the 'slackbot-config.json'
-        file. You may not have set it up correctly. Make
-        sure the file exists in the root of this app 
-        directory. See the sample-config.json for an 
-        example 'slackbot-config.json' file.\n\n`
-    );
-    process.exit(1);
-}
-var slack = require("./lib/slack.js");
-var routerConfig = {};
-var t128 = require("./lib/t128.js");
-var healthReport = require("./lib/healthReport.js");
-var alarm = require("./lib/alarmReportGenerator.js");
-var alarmManager = require ("./lib/alarmManager.js");
-
-
-function handleNodeResponse(error, data, response) {
-
-    if (error) {
-        process.stdout.write(`Failed with: ${error}\n`);
-        config.slack.reportChannels.forEach(function(channel) {
-            slack.send("128T may be *OFFLINE*!\nFailure description:```" + error + "```", channel, config.slack.slackUsername);
-        })
-    } else {
-        var outputData = healthReport(data);
-        config.slack.reportChannels.forEach(function(channel) {
-            slack.send(outputData, channel, config.slack.slackUsername);
-        })
-    }
+		process.exit(1);
+	}
 }
 
-function handleAlarms(data) {
-    var outputData = alarm(data);
-    config.slack.alarmChannels.forEach(function(channel) {
-        slack.send(outputData, channel, config.slack.slackUsername);
-    })
-}
+var getRunningPid = function (callback) {
+		fs.readFile(__dirname + '/cache/.pidfile', {
+			encoding: 'utf-8'
+		}, function (err, pid) {
+			if (err) {
+				return callback(err);
+			}
 
-t128.getData("GET", "/router/{router}/node", handleNodeResponse);
-alarmManager.on("alarmReport", (report)=> {handleAlarms(report);});
+			try {
+				process.kill(parseInt(pid, 10), 0);
+				callback(null, parseInt(pid, 10));
+			} catch(e) {
+				callback(e);
+			}
+		});
+	};
+
+switch(process.argv[2]) {
+	case 'status':
+		getRunningPid(function (err, pid) {
+			if (!err) {
+				process.stdout.write('\n128T-Slackbot Running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n'.cyan);
+				process.stdout.write('\t"' + './128t-slackbot stop'.yellow + '" to stop the 128T-Slackbot server\n');
+				process.stdout.write('\t"' + './128t-slackbot log'.yellow + '" to view server output\n');
+				process.stdout.write('\t"' + './128t-slackbot restart'.yellow + '" to restart 128T-Slackbot\n\n');
+			} else {
+				process.stdout.write('\n128T-Slackbot is not running\n'.bold);
+				process.stdout.write('\t"' + './128t-slackbot start'.yellow + '" to launch the 128T-Slackbot server\n\n');
+			}
+		});
+		break;
+
+	case 'start':
+		process.stdout.write('\nStarting 128T-Slackbot\n'.bold);
+		process.stdout.write('  "' + './128t-slackbot stop'.yellow + '" to stop the 128T-Slackbot server\n');
+		process.stdout.write('  "' + './128t-slackbot log'.yellow + '" to view server output\n');
+		process.stdout.write('  "' + './128t-slackbot restart'.yellow + '" to restart 128T-Slackbot\n\n');
+
+		// Spawn a new 128T-Slackbot process
+		var slackbotProc = cproc(__dirname + '/loader.js', {
+			env: process.env,
+			detached : true,
+			stdio : "ignore"
+		});
+
+		slackbotProc.unref();
+		break;
+
+	case 'stop':
+		getRunningPid(function (err, pid) {
+			if (!err) {
+				process.kill(pid, 'SIGTERM');
+				process.stdout.write('Stopping 128T-Slackbot. Goodbye!\n');
+			} else {
+				process.stdout.write('128T-Slackbot is already stopped.\n');
+			}
+		});
+		break;
+
+	case 'restart':
+		getRunningPid(function (err, pid) {
+			if (!err) {
+				process.kill(pid, 'SIGHUP');
+				process.stdout.write('\nRestarting 128T-Slackbot\n'.bold);
+			} else {
+				process.stdout.write('128T-Slackbot could not be restarted, as a running instance could not be found.\n');
+			}
+		});
+		break;
+
+	default:
+		process.stdout.write('\nWelcome to 128T-Slackbot!\n\n'.bold);
+		process.stdout.write('Usage: ./128t-slackbot {start|stop|restart|status}\n\n');
+		process.stdout.write('\t' + 'start'.yellow + '\t\tStart the 128T-Slackbot\n');
+		process.stdout.write('\t' + 'stop'.yellow + '\t\tStops the 128T-Slackbot\n');
+		process.stdout.write('\t' + 'restart'.yellow + '\t\tRestarts 128T-Slackbot\n');
+		process.stdout.write('\t' + 'status'.yellow + '\t\tView status of 128T-Slackbot\n');
+		process.stdout.write('\n');
+		break;
+}
