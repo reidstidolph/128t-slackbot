@@ -33,7 +33,15 @@ var healthReport = require("./lib/healthReport.js");
 var alarm = require("./lib/alarmReportGenerator.js");
 var alarmManager = require ("./lib/alarmManager.js");
 var fs = require("fs");
-fs.writeFile(__dirname + '/cache/.pidfile', process.pid);
+const log = __dirname + "/log/128t-slackbot.log";
+
+// some basic logging
+// todo: set up a log rotation system
+var logStream = fs.createWriteStream(log);
+process.stdout.write = process.stderr.write = logStream.write.bind(logStream);
+
+// record the slackbot PID
+fs.writeFile(__dirname + "/cache/.pidfile", process.pid);
 
 
 function handleNodeResponse(error, data, response) {

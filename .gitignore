@@ -1,4 +1,5 @@
 node_modules/
+log/*
 cache/*
 !cache/.gitkeep
 slackbot-config.json
