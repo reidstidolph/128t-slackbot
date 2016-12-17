@@ -21,6 +21,9 @@ if (process.argv[2]) ()=>{
   argv = process.argv[2];
 }
 
+const log = fs.openSync('./log/128t-slackbot.log', 'a');
+const errorLog = fs.openSync('./log/error.log', 'a');
+
 var getRunningPid = function (callback) {
 	fs.readFile(__dirname + pidfile, {
 		encoding: 'utf-8'
@@ -64,12 +67,13 @@ switch(process.argv[2]) {
                 process.stdout.write('   "./128t-slackbot restart"  to restart 128T-Slackbot\n\n');
 
                 // Spawn a new 128T-Slackbot process
-                var slackbotProc = childProcess(__dirname + '/main.js', {
+            	var slackbotProc = childProcess(__dirname + '/main.js', {
                     env: process.env,
                     detached : true,
-                    stdio : "ignore"
+                    stdio: [ "ignore", log, errorLog ]
                 });
 
+                process.stdout.write('\n128T-Slackbot started (pid ' + slackbotProc.pid + ')\n\n');
                 slackbotProc.unref();
             }
         });
@@ -97,7 +101,7 @@ switch(process.argv[2]) {
                 var slackbotProc = childProcess(__dirname + '/main.js', {
                     env: process.env,
                     detached : true,
-                    stdio : "ignore"
+                    stdio: [ "ignore", log, errorLog ]
                 });
 
                 process.stdout.write('\n128T-Slackbot restarted (pid ' + slackbotProc.pid + ')\n\n');

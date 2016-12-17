@@ -32,17 +32,18 @@ var healthReport = require("./lib/healthReportGenerator.js");
 var alarm = require("./lib/alarmReportGenerator.js");
 var alarmManager = require ("./lib/alarmManager.js");
 var fs = require("fs");
-const log = __dirname + "/log/128t-slackbot.log";
 
-// some basic logging
-// todo: set up a log rotation system
-var logStream = fs.createWriteStream(log);
-process.stdout.write = process.stderr.write = logStream.write.bind(logStream);
-
+// Handling for any exceptions
+//
+process.on('uncaughtException', function(err) {
+    var timestamp = new Date;
+    process.stderr.write(`${timestamp.toISOString()} - Caught exception: ${err}\n`);
+    process.stderr.write(err.stack);
+    process.exit(1);
+});
 
 // record the slackbot PID
 fs.writeFile(__dirname + "/cache/.pidfile", process.pid);
-
 
 function handleNodeResponse(error, data, response) {
 
