@@ -27,9 +27,8 @@ catch(err) {
     process.exit(1);
 }
 var slack = require("./lib/slack.js");
-var routerConfig = {};
 var t128 = require("./lib/t128.js");
-var healthReport = require("./lib/healthReport.js");
+var healthReport = require("./lib/healthReportGenerator.js");
 var alarm = require("./lib/alarmReportGenerator.js");
 var alarmManager = require ("./lib/alarmManager.js");
 var fs = require("fs");
@@ -39,6 +38,7 @@ const log = __dirname + "/log/128t-slackbot.log";
 // todo: set up a log rotation system
 var logStream = fs.createWriteStream(log);
 process.stdout.write = process.stderr.write = logStream.write.bind(logStream);
+
 
 // record the slackbot PID
 fs.writeFile(__dirname + "/cache/.pidfile", process.pid);
@@ -66,5 +66,26 @@ function handleAlarms(data) {
     })
 }
 
-t128.getData("GET", "/router/{router}/node", handleNodeResponse);
+//t128.getData("GET", "/router/{router}/node", handleNodeResponse);
+
+
+var startingTimeRef = new Date;
+const hourInterval = 3600000;
+var msToNextHour = hourInterval
+                   - ((startingTimeRef.getMinutes() * 60000) 
+                   + (startingTimeRef.getSeconds() * 1000) 
+                   + startingTimeRef.getMilliseconds());
+
+process.stdout.write(`Setting hourly timer to fire in ${msToNextHour}ms\nthen fire hourly after that.\n`);
+
+setTimeout(()=>{
+    t128.getData("GET", "/router/{router}/node", handleNodeResponse);
+    setInterval(()=>{
+        // basic interval for health report
+        t128.getData("GET", "/router/{router}/node", handleNodeResponse);
+    }, hourInterval)
+}, msToNextHour);
+
+// Handle the alarmReport events emitted by alarmManger.
+// 
 alarmManager.on("alarmReport", (report)=> {handleAlarms(report);});

@@ -89,10 +89,22 @@ switch(process.argv[2]) {
 	case 'restart':
 		getRunningPid(function (err, pid) {
 			if (!err) {
+				process.stdout.write('\n128T-Slackbot Running (pid ' + pid.toString() + ')\n');
 				process.kill(pid, 'SIGHUP');
-				process.stdout.write('\nRestarting 128T-Slackbot\n');
+				process.stdout.write('Restarting 128T-Slackbot\n');
+
+				// Spawn a new 128T-Slackbot process
+                var slackbotProc = childProcess(__dirname + '/main.js', {
+                    env: process.env,
+                    detached : true,
+                    stdio : "ignore"
+                });
+
+                process.stdout.write('\n128T-Slackbot restarted (pid ' + slackbotProc.pid + ')\n\n');
+                slackbotProc.unref();
+                
 			} else {
-				process.stdout.write('128T-Slackbot could not be restarted, as a running instance could not be found.\n');
+				process.stdout.write('\n128T-Slackbot could not be restarted, as a running instance could not be found.\n\n');
 			}
 		});
 		break;
