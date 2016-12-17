@@ -5,7 +5,16 @@
 //
 // This NodeJS application that uses a 128T Router and
 // outgoing Slack webhooks, to post router information
-// to Slack.nfig = require("./slackbot-config.json");}
+// to Slack.
+//
+// It accesses the 128T REST API for to retreive
+//data, and sends data to Slack.
+//
+// Configuration of this app is done using
+// ./t128-slackbot-config.json
+//
+
+try {var config = require("./slackbot-config.json");}
 catch(err) {
     process.stdout.write(`\n${err}\n`);
     process.stdout.write(`
@@ -27,16 +36,7 @@ const log = __dirname + "/log/128t-slackbot.log";
 
 // some basic logging
 // todo: set up a log rotation system
-var logStream 
-//
-// It accesses the 128T REST API for to retreive
-//data, and sends data to Slack.
-//
-// Configuration of this app is done using
-// ./t128-slackbot-config.json
-//
-
-try {var co= fs.createWriteStream(log);
+var logStream = fs.createWriteStream(log);
 process.stdout.write = process.stderr.write = logStream.write.bind(logStream);
 
 
