@@ -56,7 +56,8 @@ var getRunningPid = function (callback) {
 
 // function to start the 128T Slackbot child process
 var startSlackbot = function() {
-	var slackbotProc = childProcess(__dirname + '/main.js', {
+	console.log("starting slackbot");
+	var slackbotProc = childProcess("node", [__dirname + '/main.js'], {
 	    env: process.env,
 	    detached : true,
 	    stdio: [ "ignore", log, errorLog ]
@@ -144,7 +145,6 @@ switch(process.argv[2]) {
 				process.stdout.write(`128T-Slackbot ran for: ${uptime}\n\n`);
 				process.kill(pid, 'SIGHUP');
 				process.stdout.write('Restarting 128T-Slackbot\n');
-				startSlackbot();
 				var slackBotPid = startSlackbot();
 				process.stdout.write(`\n128T-Slackbot re-started (pid ${slackBotPid}, v${version})\n\n`);
 			} else {
