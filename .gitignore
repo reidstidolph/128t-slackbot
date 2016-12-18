@@ -5,3 +5,4 @@ cache/*
 !cache/.gitkeep
 slackbot-config.json
 .eslintrc*
+*.swp
