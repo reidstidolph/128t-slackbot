@@ -1,6 +1,6 @@
 {
   "name": "128t-slackbot",
-  "version": "1.0.0",
+  "version": "0.9",
   "description": "Slack bot to watch and report on 128T routers",
   "main": "t128-slackbot",
   "scripts": {
