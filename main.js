@@ -26,6 +26,8 @@ catch(err) {
     );
     process.exit(1);
 }
+const pidfile =  __dirname + "/cache/.pid.json"
+var startingTimeRef = new Date;
 var slack = require("./lib/slack.js");
 var t128 = require("./lib/t128.js");
 var healthReport = require("./lib/healthReportGenerator.js");
@@ -42,8 +44,14 @@ process.on('uncaughtException', function(err) {
     process.exit(1);
 });
 
-// record the slackbot PID
-fs.writeFile(__dirname + "/cache/.pidfile", process.pid);
+// record the slackbot PID, and start time
+fs.writeFile(pidfile, JSON.stringify({"startTime" : startingTimeRef.toJSON(), "pid" : process.pid}), (e)=>{
+    if(e) {
+      console.log(e);
+    } else {
+      console.log("JSON saved to " + pidfile);
+    }
+});
 
 function handleNodeResponse(error, data, response) {
 
@@ -70,7 +78,7 @@ function handleAlarms(data) {
 t128.getData("GET", "/router/{router}/node", handleNodeResponse);
 
 
-var startingTimeRef = new Date;
+
 const hourInterval = 3600000;
 var msToNextHour = hourInterval
                    - ((startingTimeRef.getMinutes() * 60000) 

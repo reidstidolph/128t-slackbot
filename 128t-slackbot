@@ -4,7 +4,8 @@
 // Controller of the 128T slackbot.
 //
 
-const pidfile = "/cache/.pidfile";
+const pidfile =  __dirname + "/cache/.pid.json"
+const runtime = new Date;
 var argv;
 
 try {
@@ -24,17 +25,29 @@ if (process.argv[2]) ()=>{
 const log = fs.openSync('./log/128t-slackbot.log', 'a');
 const errorLog = fs.openSync('./log/error.log', 'a');
 
+// function for reading the 128T-Slackbot pid file, and checking to see
+// if it is running.
+//
 var getRunningPid = function (callback) {
-	fs.readFile(__dirname + pidfile, {
-		encoding: 'utf-8'
-	}, function (err, pid) {
+	// read the pid file
+	fs.readFile(pidfile, {encoding: "utf-8"}, (err, pidFromFile)=> {
 		if (err) {
 			return callback(err);
 		}
-
 		try {
-			process.kill(parseInt(pid, 10), 0);
-			callback(null, parseInt(pid, 10));
+			pidJSON = JSON.parse(pidFromFile);
+			var pid = pidJSON.pid;
+			var startTime = new Date(pidJSON.startTime);
+			// test for existance of a running 128T-Slackbot process
+			process.kill(pid, 0);
+			// calculate a human readable uptime string
+			var uptimeMs = runtime.getTime() - startTime.getTime();
+			var uptimeDays = Math.floor((uptimeMs / 86400000));
+			var uptimeHours = Math.floor(((uptimeMs - (uptimeDays * 86400000)) / 3600000));
+			var uptimeMinutes = Math.floor(((uptimeMs - (uptimeDays * 86400000) - (uptimeHours * 3600000)) / 60000));
+			var uptimeSeconds = Math.floor(((uptimeMs - (uptimeDays * 86400000) - (uptimeHours * 3600000) - (uptimeMinutes * 60000)) / 1000));
+			var uptimeString = `${uptimeDays} days ${uptimeHours} hours ${uptimeMinutes} minutes ${uptimeSeconds} seconds`;
+			callback(null, pid, uptimeString);
 		} catch(e) {
 			callback(e);
 		}
@@ -43,9 +56,10 @@ var getRunningPid = function (callback) {
 
 switch(process.argv[2]) {
 	case 'status':
-		getRunningPid(function (err, pid) {
+		getRunningPid((err, pid, uptime)=> {
 			if (!err) {
 				process.stdout.write('\n128T-Slackbot Running (pid ' + pid.toString() + ')\n');
+				process.stdout.write(`Running for: ${uptime}\n`);
 				process.stdout.write('   "./128t-slackbot stop"     to stop the 128T-Slackbot\n');
 				process.stdout.write('   "./128t-slackbot restart"  to restart 128T-Slackbot\n\n');
 			} else {
@@ -56,9 +70,10 @@ switch(process.argv[2]) {
 		break;
 
 	case 'start':
-        getRunningPid(function (err, pid) {
+        getRunningPid((err, pid, uptime)=> {
             if (!err) {
                 process.stdout.write('\n128T-Slackbot is already started.\n');
+                process.stdout.write(`Running for: ${uptime}\n`);
                 process.stdout.write('   "./128t-slackbot stop"     to stop the 128T-Slackbot\n');
                 process.stdout.write('   "./128t-slackbot restart"  to restart 128T-Slackbot\n\n');
             } else {
@@ -80,9 +95,10 @@ switch(process.argv[2]) {
 		break;
 
 	case 'stop':
-		getRunningPid(function (err, pid) {
+		getRunningPid((err, pid, uptime)=> {
 			if (!err) {
 				process.kill(pid, 'SIGTERM');
+				process.stdout.write(`128T-Slackbot ran for: ${uptime}\n`);
 				process.stdout.write('Stopping 128T-Slackbot. Goodbye!\n');
 			} else {
 				process.stdout.write('128T-Slackbot is already stopped.\n');
@@ -91,9 +107,10 @@ switch(process.argv[2]) {
 		break;
 
 	case 'restart':
-		getRunningPid(function (err, pid) {
+		getRunningPid((err, pid, uptime)=> {
 			if (!err) {
 				process.stdout.write('\n128T-Slackbot Running (pid ' + pid.toString() + ')\n');
+				process.stdout.write(`128T-Slackbot ran for: ${uptime}\n`);
 				process.kill(pid, 'SIGHUP');
 				process.stdout.write('Restarting 128T-Slackbot\n');
 
