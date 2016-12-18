@@ -1,8 +1,8 @@
 {
   "name": "128t-slackbot",
   "version": "1.0.0",
-  "description": "Slack bot to watch and report on 128T nodes",
-  "main": "t128-slackbot.js",
+  "description": "Slack bot to watch and report on 128T routers",
+  "main": "t128-slackbot",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,12 +10,5 @@
   "repository": {
     "type": "git",
     "url": "https://rstidolph@bitbucket.org/rstidolph/128t-slackbot.git"
-  },
-  "dependencies": {
-    "forever-monitor": "1.7.x"
-  },
-  "license": "MIT",
-  "engines": {
-    "node": ">= 0.8.x"
   }
 }

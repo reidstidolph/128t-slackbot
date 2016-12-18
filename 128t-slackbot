@@ -102,7 +102,7 @@ switch(process.argv[2]) {
 				process.stdout.write('   "./128t-slackbot start" to launch the 128T-Slackbot\n\n');
 			}
 		});
-		break;
+	break;
 
 	case 'start':
         getRunningPid((err, pid, uptime)=> {
@@ -119,7 +119,7 @@ switch(process.argv[2]) {
                 process.stdout.write('\n128T-Slackbot started (pid ' + slackBotPid + ')\n\n');
             }
         });
-		break;
+	break;
 
 	case 'stop':
 		getRunningPid((err, pid, uptime)=> {
@@ -131,7 +131,7 @@ switch(process.argv[2]) {
 				process.stdout.write('128T-Slackbot is already stopped.\n');
 			}
 		});
-		break;
+	break;
 
 	case 'restart':
 		getRunningPid((err, pid, uptime)=> {
@@ -147,7 +147,7 @@ switch(process.argv[2]) {
 				process.stdout.write('\n128T-Slackbot could not be restarted, as a running instance could not be found.\n\n');
 			}
 		});
-		break;
+	break;
 
 	default:
 		process.stdout.write('\nWelcome to 128T-Slackbot!\n\n');
@@ -157,5 +157,5 @@ switch(process.argv[2]) {
 		process.stdout.write('\t' + 'restart' + '\t\tRestarts 128T-Slackbot\n');
 		process.stdout.write('\t' + 'status' + '\t\tView status of 128T-Slackbot\n');
 		process.stdout.write('\n');
-		break;
+	break;
 }
