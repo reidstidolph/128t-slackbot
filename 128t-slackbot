@@ -9,9 +9,10 @@ const runtime = new Date;
 var argv;
 
 try {
-	var childProcess = require('child_process').spawn,
-		fs = require('fs'),
-		path = require('path');
+	var childProcess = require('child_process').spawn;
+	var fs = require('fs');
+	var path = require('path');
+	var version = require('./package.json').version;
 } catch (e) {
     console.log(e);
 	process.stdout.write('Could not start: ' + e.code + '\n');
@@ -22,6 +23,8 @@ if (process.argv[2]) ()=>{
   argv = process.argv[2];
 }
 
+// open log files
+//
 const log = fs.openSync('./log/128t-slackbot.log', 'a');
 const errorLog = fs.openSync('./log/error.log', 'a');
 
@@ -38,12 +41,13 @@ var getRunningPid = function (callback) {
 			pidJSON = JSON.parse(pidFromFile);
 			var pid = pidJSON.pid;
 			var startTime = new Date(pidJSON.startTime);
+			var runningVer = pidJSON.version;
 			// test for existance of a running 128T-Slackbot process
 			process.kill(pid, 0);
 			// calculate a human readable uptime string
 			var uptime = getUptime(startTime, runtime);
 			var uptimeString = `${uptime.d} days ${uptime.h} hours ${uptime.m} minutes ${uptime.s} seconds`;
-			callback(null, pid, uptimeString);
+			callback(null, pid, uptimeString, runningVer);
 		} catch(e) {
 			callback(e);
 		}
@@ -91,9 +95,9 @@ var getUptime = function(d1, d2) {
 
 switch(process.argv[2]) {
 	case 'status':
-		getRunningPid((err, pid, uptime)=> {
+		getRunningPid((err, pid, uptime, runningVer)=> {
 			if (!err) {
-				process.stdout.write('\n128T-Slackbot Running (pid ' + pid.toString() + ')\n');
+				process.stdout.write(`\n128T-Slackbot is Running (pid: ${pid}, v${runningVer})\n`);
 				process.stdout.write(`Running for: ${uptime}\n\n`);
 				process.stdout.write('   "./128t-slackbot stop"     to stop the 128T-Slackbot\n');
 				process.stdout.write('   "./128t-slackbot restart"  to restart 128T-Slackbot\n\n');
@@ -105,7 +109,7 @@ switch(process.argv[2]) {
 	break;
 
 	case 'start':
-        getRunningPid((err, pid, uptime)=> {
+        getRunningPid((err, pid, uptime, runningVer)=> {
             if (!err) {
                 process.stdout.write('\n128T-Slackbot is already started.\n');
                 process.stdout.write(`Running for: ${uptime}\n\n`);
@@ -116,13 +120,13 @@ switch(process.argv[2]) {
                 process.stdout.write('   "./128t-slackbot stop"     to stop the 128T-Slackbot\n');
                 process.stdout.write('   "./128t-slackbot restart"  to restart 128T-Slackbot\n');
                 var slackBotPid = startSlackbot();
-                process.stdout.write('\n128T-Slackbot started (pid ' + slackBotPid + ')\n\n');
+                process.stdout.write(`\n128T-Slackbot started (pid ${slackBotPid}, v${version})\n\n`);
             }
         });
 	break;
 
 	case 'stop':
-		getRunningPid((err, pid, uptime)=> {
+		getRunningPid((err, pid, uptime, runningVer)=> {
 			if (!err) {
 				process.kill(pid, 'SIGTERM');
 				process.stdout.write(`\n128T-Slackbot ran for: ${uptime}\n\n`);
@@ -134,15 +138,15 @@ switch(process.argv[2]) {
 	break;
 
 	case 'restart':
-		getRunningPid((err, pid, uptime)=> {
+		getRunningPid((err, pid, uptime, runningVer)=> {
 			if (!err) {
-				process.stdout.write('\n128T-Slackbot Running (pid ' + pid.toString() + ')\n');
+				process.stdout.write(`\n128T-Slackbot is Running (pid: ${pid}, v${runningVer})\n`);
 				process.stdout.write(`128T-Slackbot ran for: ${uptime}\n\n`);
 				process.kill(pid, 'SIGHUP');
 				process.stdout.write('Restarting 128T-Slackbot\n');
 				startSlackbot();
 				var slackBotPid = startSlackbot();
-				process.stdout.write('\n128T-Slackbot re-started (pid ' + slackBotPid + ')\n\n');
+				process.stdout.write(`\n128T-Slackbot re-started (pid ${slackBotPid}, v${version})\n\n`);
 			} else {
 				process.stdout.write('\n128T-Slackbot could not be restarted, as a running instance could not be found.\n\n');
 			}
@@ -150,7 +154,7 @@ switch(process.argv[2]) {
 	break;
 
 	default:
-		process.stdout.write('\nWelcome to 128T-Slackbot!\n\n');
+		process.stdout.write(`\nWelcome to 128T-Slackbot! (v${version})\n\n`);
 		process.stdout.write('Usage: ./128t-slackbot {start|stop|restart|status}\n\n');
 		process.stdout.write('\t' + 'start' + '\t\tStart the 128T-Slackbot\n');
 		process.stdout.write('\t' + 'stop' + '\t\tStops the 128T-Slackbot\n');

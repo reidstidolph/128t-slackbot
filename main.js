@@ -27,6 +27,7 @@ catch(err) {
     process.exit(1);
 }
 const pidfile =  __dirname + "/cache/.pid.json"
+const version = require('./package.json').version;
 var startingTimeRef = new Date;
 var slack = require("./lib/slack.js");
 var t128 = require("./lib/t128.js");
@@ -45,7 +46,7 @@ process.on('uncaughtException', function(err) {
 });
 
 // record the slackbot PID, and start time
-fs.writeFile(pidfile, JSON.stringify({"startTime" : startingTimeRef.toJSON(), "pid" : process.pid}), (e)=>{
+fs.writeFile(pidfile, JSON.stringify({"startTime" : startingTimeRef.toJSON(), "pid" : process.pid, "version" : version}), (e)=>{
     if(e) {
       console.log(e);
     } else {
