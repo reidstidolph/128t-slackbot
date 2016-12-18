@@ -3,9 +3,6 @@
   "version": "0.9",
   "description": "Slack bot to watch and report on 128T routers",
   "main": "t128-slackbot",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "Reid Stidolph <rstidolph@128technology.com>",
   "repository": {
     "type": "git",
