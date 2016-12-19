@@ -36,7 +36,8 @@ var alarm = require("./lib/alarmReportGenerator.js");
 var alarmManager = require ("./lib/alarmManager.js");
 var fs = require("fs");
 var Logger =  require("./lib/Logger.js"); // import logger module
-var logger = new Logger("main.js", config.logLevel); // set up logger
+var path = require("path"); // import path module
+var logger = new Logger(path.basename(__filename), config.logLevel); // set up logger
 
 // Handling for any exceptions
 //

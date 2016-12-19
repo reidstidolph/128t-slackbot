@@ -1,6 +1,7 @@
 /*jshint node: true */
 "use strict";
 
+var path = require('path');
 var Logger =  require("../lib/logger.js");
 var logger = new Logger("loggerTest", "notice");
 
@@ -17,3 +18,6 @@ logger.log("info", "object is:", obj);
 logger.log("info", "object is:", obj);
 logger.log("notice", "object is:", obj);
 logger.log("critical", "object is:", obj);
+
+console.log(__filename);
+console.log(path.basename(__filename));
