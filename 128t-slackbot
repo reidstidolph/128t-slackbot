@@ -1,17 +1,18 @@
 #!/usr/bin/env node
+/*jshint node: true */
+"use strict";
 
 //
 // Controller of the 128T slackbot.
 //
 
-const pidfile =  __dirname + "/cache/.pid.json"
-const runtime = new Date;
+const pidfile =  __dirname + "/cache/.pid.json";
+const runtime = new Date();
 var argv;
 
 try {
 	var childProcess = require('child_process').spawn;
 	var fs = require('fs');
-	var path = require('path');
 	var version = require('./package.json').version;
 } catch (e) {
     console.log(e);
@@ -19,7 +20,7 @@ try {
 	process.exit(1);
 }
 
-if (process.argv[2]) ()=>{
+if (process.argv[2]) {
   argv = process.argv[2];
 }
 
@@ -38,7 +39,7 @@ var getRunningPid = function (callback) {
 			return callback(err);
 		}
 		try {
-			pidJSON = JSON.parse(pidFromFile);
+			var pidJSON = JSON.parse(pidFromFile);
 			var pid = pidJSON.pid;
 			var startTime = new Date(pidJSON.startTime);
 			var runningVer = pidJSON.version;
@@ -64,15 +65,15 @@ var startSlackbot = function() {
 	});
 	slackbotProc.unref();
 	return slackbotProc.pid;
-}
+};
 
 // function that takes in a couple of date objects, and calculates a difference between them
 var getUptime = function(d1, d2) {
 	if (d1 instanceof Date && d2 instanceof Date) {
 		var currentDate;
 		var startDate;
-		d1ms = d1.getTime();
-		d2ms = d2.getTime();
+		var d1ms = d1.getTime();
+		var d2ms = d2.getTime();
 
 		if (d1ms > d2ms) {
 			currentDate = d1ms;
@@ -84,7 +85,7 @@ var getUptime = function(d1, d2) {
 			return {d:0,h:0,m:0,s:0};
 		}
 		
-		uptimeObj = {};
+		var uptimeObj = {};
 		var uptimeMs = currentDate - startDate;
 		uptimeObj.d = Math.floor((uptimeMs / 86400000));
 		uptimeObj.h = Math.floor(((uptimeMs - (uptimeObj.d * 86400000)) / 3600000));
@@ -92,7 +93,7 @@ var getUptime = function(d1, d2) {
 		uptimeObj.s = Math.floor(((uptimeMs - (uptimeObj.d * 86400000) - (uptimeObj.h * 3600000) - (uptimeObj.m * 60000)) / 1000));
 		return uptimeObj;
 	}
-}
+};
 
 switch(process.argv[2]) {
 	case 'status':
@@ -110,7 +111,7 @@ switch(process.argv[2]) {
 	break;
 
 	case 'start':
-        getRunningPid((err, pid, uptime, runningVer)=> {
+        getRunningPid((err, pid, uptime)=> {
             if (!err) {
                 process.stdout.write('\n128T-Slackbot is already started.\n');
                 process.stdout.write(`Running for: ${uptime}\n\n`);
@@ -127,7 +128,7 @@ switch(process.argv[2]) {
 	break;
 
 	case 'stop':
-		getRunningPid((err, pid, uptime, runningVer)=> {
+		getRunningPid((err, pid, uptime)=> {
 			if (!err) {
 				process.kill(pid, 'SIGTERM');
 				process.stdout.write(`\n128T-Slackbot ran for: ${uptime}\n\n`);
