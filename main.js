@@ -27,6 +27,7 @@ catch(err) {
 }
 const pidfile =  __dirname + "/cache/.pid.json"
 const version = require('./package.json').version;
+
 var startingTimeRef = new Date;
 var slack = require("./lib/slack.js");
 var t128 = require("./lib/t128.js");
@@ -34,6 +35,8 @@ var healthReport = require("./lib/healthReportGenerator.js");
 var alarm = require("./lib/alarmReportGenerator.js");
 var alarmManager = require ("./lib/alarmManager.js");
 var fs = require("fs");
+var Logger =  require("./lib/Logger.js"); // import logger module
+var logger = new Logger("main.js", config.logLevel); // set up logger
 
 // Handling for any exceptions
 //
@@ -45,18 +48,19 @@ process.on('uncaughtException', function(err) {
 });
 
 // record the slackbot PID, and start time
-fs.writeFile(pidfile, JSON.stringify({"startTime" : startingTimeRef.toJSON(), "pid" : process.pid, "version" : version}), (e)=>{
+var procInfo = {"startTime" : startingTimeRef.toJSON(), "pid" : process.pid, "version" : version};
+fs.writeFile(pidfile, JSON.stringify(procInfo), (e)=>{
     if(e) {
-      console.log(e);
+        logger.log("warning", `error writing to ${pidfile}`, e);
     } else {
-      console.log("JSON saved to " + pidfile);
+        logger.log("debug", `pid recorded to ${pidfile}`, procInfo)
     }
 });
 
-function handleNodeResponse(error, data, response) {
+function handle128TResponse(error, data, response) {
 
     if (error) {
-        process.stdout.write(`Failed with: ${error}\n`);
+        logger.log("error", "Request for 128T data failed:", error);
         config.slack.reportChannels.forEach(function(channel) {
             slack.send("128T may be *OFFLINE*!\nFailure description:```" + error + "```", channel, config.slack.slackUsername);
         })
@@ -75,7 +79,7 @@ function handleAlarms(data) {
     })
 }
 
-t128.getData("GET", "/router/{router}/node", handleNodeResponse);
+t128.getData("GET", "/router/{router}/node", handle128TResponse);
 
 
 
@@ -85,13 +89,13 @@ var msToNextHour = hourInterval
                    + (startingTimeRef.getSeconds() * 1000) 
                    + startingTimeRef.getMilliseconds());
 
-process.stdout.write(`Setting hourly timer to fire in ${msToNextHour}ms\nthen fire hourly after that.\n`);
+logger.log("debug", `Setting hourly timer to fire in ${msToNextHour}ms`);
 
 setTimeout(()=>{
-    t128.getData("GET", "/router/{router}/node", handleNodeResponse);
+    t128.getData("GET", "/router/{router}/node", handle128TResponse);
     setInterval(()=>{
         // basic interval for health report
-        t128.getData("GET", "/router/{router}/node", handleNodeResponse);
+        t128.getData("GET", "/router/{router}/node", handle128TResponse);
     }, hourInterval)
 }, msToNextHour);
 

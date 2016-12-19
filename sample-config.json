@@ -1,4 +1,5 @@
 {
+   "logLevel"                : "debug",
    "t128Control" : {
       "api"                  : "https://<SOME_128T_ROUTER_HOST>/api/v1",
       "username"             : "<SOME_128T_ROUTER_USER>",
