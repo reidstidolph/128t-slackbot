@@ -66,7 +66,7 @@ logUtils.watchFile(logFile, (fileSize)=>{
 
 // record the slackbot PID, and start time
 var procInfo = {"startTime" : startingTimeRef.toJSON(), "pid" : process.pid, "version" : version};
-fs.writeFile(pidfile, JSON.stringify(procInfo), (e)=>{
+fs.writeFile(pidfile, JSON.stringify(procInfo), { mode: 0o600 }, (e)=>{
     if(e) {
         logger.log("warning", `error writing to ${pidfile}`, e);
     } else {
