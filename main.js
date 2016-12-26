@@ -34,6 +34,7 @@ var t128 = require("./lib/t128.js"); // interacts with a 128T router
 var healthReport = require("./lib/healthReportGenerator.js"); // creates Slack formatted health reports 
 var alarm = require("./lib/alarmReportGenerator.js"); // creates Slack formatted alarm reports
 var alarmManager = require ("./lib/alarmManager.js"); // manages alarm state
+var Scheduler = require("./lib/Scheduler.js");
 var fs = require("fs"); // file system
 
 // modules for handling logs
@@ -78,13 +79,13 @@ function handle128TResponse(error, data) {
 
     if (error) {
         logger.log("error", "Request for 128T data failed:", error);
-        config.slack.reportChannels.forEach(function(channel) {
+        config.slack.reportChannels.forEach((channel)=> {
             slack.send("128T may be *OFFLINE*!\nFailure description:```" + error + "```", channel, config.slack.slackUsername);
         });
     } else {
         logger.log("info", "Got 128T router health data. Startint Slack health report generation.")
         var outputData = healthReport(data);
-        config.slack.reportChannels.forEach(function(channel) {
+        config.slack.reportChannels.forEach((channel)=> {
             slack.send(outputData, channel, config.slack.slackUsername);
         });
     }
@@ -97,22 +98,12 @@ function handleAlarms(data) {
     });
 }
 
-t128.getData("GET", "/router/{router}/node", handle128TResponse);
-
-
-
-const hourInterval = 3600000;
-var msToNextHour = hourInterval - ((startingTimeRef.getMinutes() * 60000) + (startingTimeRef.getSeconds() * 1000) + startingTimeRef.getMilliseconds());
-
-logger.log("debug", `Setting hourly timer to fire in ${msToNextHour}ms`);
-
-setTimeout(()=>{
-    t128.getData("GET", "/router/{router}/node", handle128TResponse);
-    setInterval(()=>{
-        // basic interval for health report
+// for each configured health report schedules, set up a new schedule 
+config.healthReportSchedules.forEach((schedule)=>{
+    var mySchedule = new Scheduler(schedule, ()=>{
         t128.getData("GET", "/router/{router}/node", handle128TResponse);
-    }, hourInterval);
-}, msToNextHour);
+    });
+});
 
 // Handle the alarmReport events emitted by alarmManger.
 // 
