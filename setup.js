@@ -37,6 +37,7 @@ var defaultConfig = {
 };
 
 var config = {};
+
 // function to print a nice output of the config
 //
 function printConfig(){
@@ -155,6 +156,34 @@ function t128ControlAPIQuestion(){
 		}
 		process.stdout.write(`>> 128T Router REST URL:  ${config.t128Control.api}\n\n`)
 	});
+}
+
+function t128UsernameQuestion(){
+
+}
+
+function t128PasswordQuestion(){
+
+}
+
+function slackWebhookQuestion(){
+
+}
+
+function slackUserQuestion(){
+
+}
+
+function slackAlarmChannelsQuestion(){
+
+}
+
+function slackHealthReportChannelsQuestion(){
+
+}
+
+function healthReportScheduleQuestion(){
+
 }
 
 function startNewConfig(){
