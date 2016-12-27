@@ -154,6 +154,9 @@ switch(process.argv[2]) {
 		});
 	break;
 
+	case 'setup':
+		// todo: integrate setup wizard
+
 	default:
 		process.stdout.write(`\nWelcome to 128T-Slackbot! (v${version})\n\n`);
 		process.stdout.write('Usage: ./128t-slackbot {start|stop|restart|status}\n\n');
