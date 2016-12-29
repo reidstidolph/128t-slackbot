@@ -12,7 +12,7 @@ var defaultConfig = {
 	"logLevel"                  : "debug",
 	"t128Control" : {
 		"api"                    : "https://127.0.0.1/api/v1",
-		"username"               : null,
+		"username"               : "admin",
 		"password"               : null
 	},
 	"slack" : {
@@ -37,6 +37,55 @@ var defaultConfig = {
 };
 
 var config = {};
+
+var prompt = {};
+prompt.rl = readline.createInterface({
+	input: process.stdin,
+	output: process.stdout
+});
+
+prompt.question = function(text, invalidText, validation, callback){
+
+	var validate;
+
+	if (typeof validation === "string") {
+
+		var regex = new RegExp(validation);
+		validate = function(stuffToTest){
+			return regex.text(stuffToTest);
+		}
+
+	} else if (typeof validation === "function") {
+		
+		validate = validation;
+
+	} else {
+
+		validate = function(){return false};
+	
+	}
+
+	function askQuestion(){
+		prompt.rl.question(`${text}:\n> `, processAnswer);
+	}
+
+	function processAnswer(answer){
+		if (answer === "" || answer === null || validate(answer)) {
+			process.stdout.write(`\n${invalidText}\n\n`);
+			askQuestion();
+		} else {
+			process.stdout.write(`>> saved: ${answer}\n\n`);
+			callback(answer);
+		}
+	}
+
+	askQuestion();
+}
+
+prompt.close = function(){
+	prompt.rl.close();
+}
+
 
 // function to print a nice output of the config
 //
@@ -121,7 +170,7 @@ function keepConfigQuestion(){
 		input: process.stdin,
 		output: process.stdout
 	});
-	rl.question("Modify this config? (y/n) ", (answer) => {
+	rl.question("Modify this config? (y/n)\n> ", (answer) => {
 		if (answer === "y") {
 			process.stdout.write("Ok, starting modifying config...\n");
 			rl.close();
@@ -135,61 +184,141 @@ function keepConfigQuestion(){
 	});
 }
 
-// question to ask if config json parse succeeds
-function t128ControlAPIQuestion(){
-
-	var rl = readline.createInterface({
-		input: process.stdin,
-		output: process.stdout
-	});
-	rl.question(`Enter the REST URL of your 128T Router\n(press 'enter' to use default: '${defaultConfig.t128Control.api}'):\n> `, (answer) => {
-		if (answer === "") {
-			rl.close();
-		} else if (url.parse(answer).protocol == null || url.parse(answer).host == null) {
-			process.stdout.write("That does not appear to be a valid URL.\n\n");
-			rl.close();
-			t128ControlAPIQuestion();
-			return;
-		} else {
-			config.t128Control.api = answer;
-			rl.close();
-		}
-		process.stdout.write(`>> 128T Router REST URL:  ${config.t128Control.api}\n\n`)
-	});
-}
-
-function t128UsernameQuestion(){
-
-}
-
-function t128PasswordQuestion(){
-
-}
-
-function slackWebhookQuestion(){
-
-}
-
-function slackUserQuestion(){
-
-}
-
-function slackAlarmChannelsQuestion(){
-
-}
-
-function slackHealthReportChannelsQuestion(){
-
-}
-
 function healthReportScheduleQuestion(){
 
 }
 
+// this kicks off a series of prompts to setup Slack
+//
+function slackSetup(runWhenFinished){
+	process.stdout.write("Let's get some information about your Slack team...\n\n");
+	function slackWebhookQuestion(){
+		var rl = readline.createInterface({
+			input: process.stdin,
+			output: process.stdout
+		});
+		rl.question(`1. Enter your Slack Webhook URL:\n> `, (answer) => {
+			if (answer === "") {
+				rl.close();
+			} else if (url.parse(answer).protocol == null || url.parse(answer).host == null) {
+				process.stdout.write("\nThat does not appear to be a valid URL.\n\n");
+				rl.close();
+				t128ControlAPIQuestion();
+				return;
+			} else {
+				config.t128Control.api = answer;
+				rl.close();
+			}
+			process.stdout.write(`>> 128T Router REST URL:  ${config.t128Control.api}\n\n`)
+		});
+	}
+
+	function slackUserQuestion(){
+
+	}
+
+	function slackAlarmChannelsQuestion(){
+
+	}
+
+	function slackHealthReportChannelsQuestion(){
+
+	}
+
+	slackWebhookQuestion();
+}
+
+// this kicks off a series of prompts to setup a 128T router
+//
+function routerSetup(runWhenFinished){
+	
+	var text = `1. Enter the REST URL of your 128T Router\n(press 'enter' to use default: '${defaultConfig.t128Control.api}')`;
+	var invalidText = "That does not appear to be a valid URL.";
+	var validation = function(answer){
+		if (url.parse(answer).protocol == null || url.parse(answer).host == null) {
+			return true;
+		} else {return false;}
+	}
+
+	process.stdout.write("\nLets get some information about your 128T Router...\n\n");
+
+	prompt.question(text, invalidText, validation, (answer)=>{
+
+	});
+	
+
+	function t128UsernameQuestion(){
+
+		var validation = /\s/;
+
+		var rl = readline.createInterface({
+			input: process.stdin,
+			output: process.stdout
+		});
+		rl.question(`2. Enter an authorized username for your 128T Router\n(press 'enter' to use default: '${defaultConfig.t128Control.username}'):\n> `, (answer) => {
+			if (answer === "") {
+				rl.close();
+			} else if (validation.test(answer)) {
+				process.stdout.write("\nThat does not appear to be a valid username. Make sure it contains no spaces.\n\n");
+				rl.close();
+				t128UsernameQuestion();
+				return;
+			} else {
+				config.t128Control.username = answer;
+				rl.close();
+			}
+			process.stdout.write(`>> 128T Router Username:  ${config.t128Control.username}\n\n`);
+			t128PasswordQuestion();
+		});
+	}
+
+	function t128PasswordQuestion(){
+
+		var validation = /\s/;
+
+		var rl = readline.createInterface({
+			input: process.stdin,
+			output: null
+		});
+
+		process.stdout.write(`3. Enter password for ${config.t128Control.username} on your 128T Router:\n(keystrokes will be hidden):\n> `);
+		rl.question(`3. Enter password for ${config.t128Control.username} on your 128T Router:\n(keystrokes will be hidden):\n> `, (answer) => {
+			if (answer === "" || answer === null) {
+				process.stdout.write("\nThat does not appear to be a valid username. Got no input.\n\n");
+				rl.close();
+				setTimeout(()=>{
+				t128PasswordQuestion();
+				}, 1000)
+				return
+			} else if (validation.test(answer)) {
+				process.stdout.write("\nThat does not appear to be a valid password. Make sure it contains no spaces.\n\n");
+				rl.close();
+				t128PasswordQuestion();
+				return;
+			} else {
+				config.t128Control.password = answer;
+				rl.close();
+			}
+			process.stdout.write(`>> 128T Router password:  (set)\n\n`);
+			runWhenFinished();
+		});
+
+	}
+}
+
 function startNewConfig(){
 	config = defaultConfig;
-	process.stdout.write("\nFirst lets get some information about your 128T Router...\n\n");
-	t128ControlAPIQuestion();
+
+	function onRouterSetup(){
+		process.stdout.write("128T Router setup complete.\n");
+		slackSetup();
+	}
+
+	function onSlackSetup(){
+		process.stdout.write("Slack setup complete.\n");
+	}
+	
+	routerSetup(onRouterSetup);
 }
 
 process.stdout.write("\nBeginning 128T-Slackbot setup...\n\n");
