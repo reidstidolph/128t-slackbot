@@ -44,39 +44,86 @@ prompt.rl = readline.createInterface({
 	output: process.stdout
 });
 
-prompt.question = function(text, invalidText, validation, callback){
+// method of the prompt object for asking user questions, and processing responses.
+// params arg takes an object like:
+// {
+//		text : "string containing question text",
+//		invalidText : "string containing text shown if response is invalid",
+//		validation : (optional...may be a function, regex, or string)
+//		default : "default answer value" (optional...passed as answer if none is entered.),
+//      protected : true (optional...used for hiding passwords)
+//	}
+//
+// Callback returns response string as arg
+//
+prompt.question = function(params, callback){
 
 	var validate;
 
-	if (typeof validation === "string") {
-
-		var regex = new RegExp(validation);
-		validate = function(stuffToTest){
-			return regex.text(stuffToTest);
-		}
-
-	} else if (typeof validation === "function") {
-		
-		validate = validation;
-
-	} else {
-
-		validate = function(){return false};
-	
-	}
-
 	function askQuestion(){
-		prompt.rl.question(`${text}:\n> `, processAnswer);
+		// if protected, i.e. a password, hide text
+		if (params.protected === true) {
+			var stdin = process.openStdin();
+			var onDataHandler = function(char) {
+				char = char + "";
+				switch (char) {
+					case "\n": case "\r": case "\u0004":
+					// Remove this handler
+					stdin.removeListener("data",onDataHandler); 
+					break;//stdin.pause(); break;
+					default:
+					process.stdout.write("'\x1B[2K\x1B[200D" + "> " + Array(prompt.rl.line.length+1).join("*"));
+					break;
+				}
+			}
+			process.stdin.on("data", onDataHandler);
+			prompt.rl.question(`${params.text}:\n> `, function(value) {
+				prompt.rl.history = prompt.rl.history.slice(1);
+				processAnswer(value);
+			});
+
+		} else {
+			prompt.rl.question(`${params.text}:\n> `, processAnswer);
+		}
 	}
 
 	function processAnswer(answer){
-		if (answer === "" || answer === null || validate(answer)) {
-			process.stdout.write(`\n${invalidText}\n\n`);
+		if (answer === "" || answer === null ){
+			// if a default is provided, return it as the answer...otherwise it's invalid
+			if (params.default) {
+				process.stdout.write(`>> saved: ${params.default}\n\n`);
+				callback(params.default);
+			} else {
+				process.stdout.write(`\n${params.invalidText}\n\n`);
+				askQuestion();
+			}
+		} else if (validate(answer)) {
+			process.stdout.write(`\n${params.invalidText}\n\n`);
 			askQuestion();
 		} else {
-			process.stdout.write(`>> saved: ${answer}\n\n`);
+			if (params.protected === true) {
+				process.stdout.write(">> saved.\n\n")
+			} else {
+				process.stdout.write(`>> saved: ${answer}\n\n`);
+			}
 			callback(answer);
 		}
+	}
+
+	if (typeof params.validation === "string") {
+		validate = function(stuffToTest){
+			if (stuffToTest == params.validation) {
+				return true
+			} else {return false;}
+		}
+	} else if (typeof params.validation === "function") {
+		validate = params.validation;
+	} else if (params.validation instanceof RegExp) {
+		validate = function(stuffToTest){
+			return params.validation.test(stuffToTest);
+		}
+	} else {
+		validate = function(){return false};
 	}
 
 	askQuestion();
@@ -231,79 +278,58 @@ function slackSetup(runWhenFinished){
 // this kicks off a series of prompts to setup a 128T router
 //
 function routerSetup(runWhenFinished){
-	
-	var text = `1. Enter the REST URL of your 128T Router\n(press 'enter' to use default: '${defaultConfig.t128Control.api}')`;
-	var invalidText = "That does not appear to be a valid URL.";
-	var validation = function(answer){
+
+	var validateUrl = function(answer){
 		if (url.parse(answer).protocol == null || url.parse(answer).host == null) {
 			return true;
 		} else {return false;}
 	}
 
-	process.stdout.write("\nLets get some information about your 128T Router...\n\n");
+	var routerUrlQuestionParams = {
+		text : `1. Enter the REST URL of your 128T Router\n(press 'enter' to use default: '${defaultConfig.t128Control.api}')`,
+		invalidText : "That does not appear to be a valid URL.",
+		validation : validateUrl,
+		default : defaultConfig.t128Control.api
+	}
 
-	prompt.question(text, invalidText, validation, (answer)=>{
+	var routerUserQuestionParams = {
+		text : `2. Enter an authorized username for your 128T Router\n(press 'enter' to use default: '${defaultConfig.t128Control.username}')`,
+		invalidText : "That does not appear to be a valid username. Make sure it contains no spaces.",
+		validation : /\s/,
+		default : defaultConfig.t128Control.username
+	}
 
-	});
-	
+	var routerPassQuestionParams = {
+		text : `3. Enter password for ${config.t128Control.username} on your 128T Router:`,
+		invalidText : "That does not appear to be a valid password. Make sure it contains no spaces.",
+		validation : /\s/,
+		protected: true
+	}
 
 	function t128UsernameQuestion(){
-
-		var validation = /\s/;
-
-		var rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout
-		});
-		rl.question(`2. Enter an authorized username for your 128T Router\n(press 'enter' to use default: '${defaultConfig.t128Control.username}'):\n> `, (answer) => {
-			if (answer === "") {
-				rl.close();
-			} else if (validation.test(answer)) {
-				process.stdout.write("\nThat does not appear to be a valid username. Make sure it contains no spaces.\n\n");
-				rl.close();
-				t128UsernameQuestion();
-				return;
-			} else {
-				config.t128Control.username = answer;
-				rl.close();
-			}
-			process.stdout.write(`>> 128T Router Username:  ${config.t128Control.username}\n\n`);
+		prompt.question(routerUserQuestionParams, (answer)=>{
+			config.t128Control.username = answer;
+			// next ask password question
 			t128PasswordQuestion();
 		});
 	}
 
 	function t128PasswordQuestion(){
-
-		var validation = /\s/;
-
-		var rl = readline.createInterface({
-			input: process.stdin,
-			output: null
+		prompt.question(routerPassQuestionParams, (answer)=>{
+			config.t128Control.password = answer;
+			// next ask password question
+			
 		});
-
-		process.stdout.write(`3. Enter password for ${config.t128Control.username} on your 128T Router:\n(keystrokes will be hidden):\n> `);
-		rl.question(`3. Enter password for ${config.t128Control.username} on your 128T Router:\n(keystrokes will be hidden):\n> `, (answer) => {
-			if (answer === "" || answer === null) {
-				process.stdout.write("\nThat does not appear to be a valid username. Got no input.\n\n");
-				rl.close();
-				setTimeout(()=>{
-				t128PasswordQuestion();
-				}, 1000)
-				return
-			} else if (validation.test(answer)) {
-				process.stdout.write("\nThat does not appear to be a valid password. Make sure it contains no spaces.\n\n");
-				rl.close();
-				t128PasswordQuestion();
-				return;
-			} else {
-				config.t128Control.password = answer;
-				rl.close();
-			}
-			process.stdout.write(`>> 128T Router password:  (set)\n\n`);
-			runWhenFinished();
-		});
-
 	}
+
+	process.stdout.write("\nLets get some information about your 128T Router...\n\n");
+
+	prompt.question(routerUrlQuestionParams, (answer)=>{
+		config.t128Control.api = answer;
+		// next ask username question
+		t128UsernameQuestion();
+	});
+	
 }
 
 function startNewConfig(){
