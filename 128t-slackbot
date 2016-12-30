@@ -15,6 +15,7 @@ try {
 	var fs = require('fs');
 	var version = require('./package.json').version;
 	var setup = require("./lib/setup.js");
+
 } catch (e) {
     console.log(e);
 	process.stdout.write('Could not start: ' + e.code + '\n');
@@ -66,6 +67,26 @@ var startSlackbot = function() {
 	});
 	slackbotProc.unref();
 	return slackbotProc.pid;
+};
+
+// function to launch a slack test
+var runSlackTest = function() {
+	console.log("\nstarting Slack test\n");
+	childProcess("node", [__dirname + '/test/slackTest.js'], {
+	    env: process.env,
+	    detached : false,
+	    stdio: [ "ignore", process.stdout, process.stdout ]
+	});
+};
+
+// function to launch a router test
+var runRouterTest = function() {
+	console.log("\nstarting 128T Router test\n");
+	childProcess("node", [__dirname + '/test/routerTest.js'], {
+	    env: process.env,
+	    detached : false,
+	    stdio: [ "ignore", process.stdout, process.stdout ]
+	});
 };
 
 // function that takes in a couple of date objects, and calculates a difference between them
@@ -159,14 +180,24 @@ switch(process.argv[2]) {
 		setup();
 	break;
 
+	case 'slacktest':
+		runSlackTest();
+	break;
+
+	case 'routertest':
+		runRouterTest();
+	break;
+
 	default:
 		process.stdout.write(`\nWelcome to 128T-Slackbot! (v${version})\n\n`);
-		process.stdout.write('Usage: ./128t-slackbot {start|stop|restart|status|setup}\n\n');
+		process.stdout.write('Usage: ./128t-slackbot {start|stop|restart|status|setup|slacktest|routertest}\n\n');
 		process.stdout.write('\t' + 'start' + '\t\tStart the 128T-Slackbot\n');
 		process.stdout.write('\t' + 'stop' + '\t\tStops the 128T-Slackbot\n');
 		process.stdout.write('\t' + 'restart' + '\t\tRestarts 128T-Slackbot\n');
 		process.stdout.write('\t' + 'status' + '\t\tView status of 128T-Slackbot\n');
 		process.stdout.write('\t' + 'setup' + '\t\tConfigure 128T-Slackbot\n');
+		process.stdout.write('\t' + 'slacktest' + '\tTest Slack configuration\n');
+		process.stdout.write('\t' + 'routertest' + '\tTest 128T Router configuraton\n');
 		process.stdout.write('\n');
 	break;
 }
