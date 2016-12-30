@@ -70,6 +70,7 @@ function dupCheck(string, array){
 // hey...it works.
 //
 var parseTimeString = function(input){
+
 	var outputArray = [];
 	var stringLength = input.length;
 	var outputArray = [];
@@ -90,18 +91,18 @@ var parseTimeString = function(input){
 				// ..then advance
 				next++;
 			}
-			
+
 			if ((next - i) == 1) {
 				// single digit...push it in
 				outputArray.push(parseInt(input[i]));
+
 			} else {
 				if (range === false) {
 					// multiple digits...concatinate and push
 					for (var j = i; j < next; j++){
 						numberString += input[j];
-						outputArray.push(parseInt(numberString));
-						
 					}
+					outputArray.push(parseInt(numberString));
 					// increase the interation passed the next separator
 					i += (next - i);
 				} else {
@@ -563,7 +564,7 @@ function scheduleSetup(runWhenFinished){
             (Example: '*' is all hours from 12am to 11pm)`,
 			invalidText : "That does not appear valid. Make sure there are no spaces.\nValid characters are '1'-'23', '-', and ','.",
 			// one big, nasty regex. Ugh.
-			validation : /^(\*|(((?:[0-9]|1[0-9]|2[0-3])|(?:[0-9]|1[0-9]|2[0-3])-(?:[0-9]|1[0-9]|2[0-3]))|(?:(?:[0-9],|1[0-9]|2[0-3],)|(?:[0-9]|1[0-9]|2[0-3])-(?:[0-9]|1[0-9]|2[0-3]),){1,23}(?:(?:[0-9]|1[0-9]|2[0-3])|(?:[0-9]|1[0-9]|2[0-3])-(?:[0-9]|1[0-9]|2[0-3]))))$/
+			validation : /^(\*|(((?:[0-9]|1[0-9]|2[0-3])|(?:[0-9]|1[0-9]|2[0-3])-(?:[0-9]|1[0-9]|2[0-3]))|(?:(?:[0-9],|1[0-9],|2[0-3],)|(?:[0-9]|1[0-9]|2[0-3])-(?:[0-9]|1[0-9]|2[0-3]),){1,23}(?:(?:[0-9]|1[0-9]|2[0-3])|(?:[0-9]|1[0-9]|2[0-3])-(?:[0-9]|1[0-9]|2[0-3]))))$/
 		}
 
 		prompt.question(hoursQuestionParams, (answer)=>{
