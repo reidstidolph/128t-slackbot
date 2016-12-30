@@ -34,30 +34,32 @@ To install the 128T-Slackbot on your host system, us the following steps:
 [user@host]$ chmod +x ./128t-slackbot
 ```
 ## Configuration
-todo
+To set up the 128T-Slackbot, simply run the setup wizard, and follow the prompts.
+```
+#!plaintext
+[user@host]$ ./128t-slackbot setup
+```
 
 ## Operation
-todo
-
+Operating the 128T-Slackbot is easy. Run the 128T-Slackbot without any arguments to see the available options.
 ```
 #!plaintext
 [user@host]$ ./128t-slackbot 
 
-Welcome to 128T-Slackbot!
+Welcome to 128T-Slackbot! (v1.0.0)
 
-Usage: ./128t-slackbot {start|stop|restart|status}
+Usage: ./128t-slackbot {start|stop|restart|status|setup|slacktest|routertest}
 
 	start		Start the 128T-Slackbot
 	stop		Stops the 128T-Slackbot
 	restart		Restarts 128T-Slackbot
 	status		View status of 128T-Slackbot
-
+	setup		Configure 128T-Slackbot
+	slacktest	Test Slack configuration
+	routertest	Test 128T Router configuraton
 
 ```
 
 
-## Contributors
-todo
-
-## License
-todo
+## Debug
+If you are needing to debug, logs are written to the `./log` directory. `128t-slackbot.log` contains detailed logging of the code execution. If your 128T-Slackbot stops running due to a crash, it will be logged to the `error.log` file.
