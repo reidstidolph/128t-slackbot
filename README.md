@@ -12,7 +12,7 @@ The basic components needed for a working 128T-Slackbot are:
 * Connectivity from 128T-Slackbot host to the 128T Router, and from the 128T-Slackbot host to hooks.slack.com
 
 ### Slack Setup ###
-To enable your 128T-Slackbot to integrate with Slack, and Incoming WebHook is needed on your Slack team. If you do not already have an Incoming WebHook established, browse to your Slack "Custom Integrations" page, and then to "Incoming WebHooks"
+To enable your 128T-Slackbot to integrate with Slack, an Incoming WebHook is needed on your Slack team. If you do not already have an Incoming WebHook established, browse to your Slack "Custom Integrations" page, and then to "Incoming WebHooks"
 
 After you have an Incoming WebHook enabled, these are the key integration settings:
 
