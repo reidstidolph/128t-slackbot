@@ -14,6 +14,7 @@ try {
 	var childProcess = require('child_process').spawn;
 	var fs = require('fs');
 	var version = require('./package.json').version;
+	var setup = require("./lib/setup.js");
 } catch (e) {
     console.log(e);
 	process.stdout.write('Could not start: ' + e.code + '\n');
@@ -155,15 +156,17 @@ switch(process.argv[2]) {
 	break;
 
 	case 'setup':
-		// todo: integrate setup wizard
+		setup();
+	break;
 
 	default:
 		process.stdout.write(`\nWelcome to 128T-Slackbot! (v${version})\n\n`);
-		process.stdout.write('Usage: ./128t-slackbot {start|stop|restart|status}\n\n');
+		process.stdout.write('Usage: ./128t-slackbot {start|stop|restart|status|setup}\n\n');
 		process.stdout.write('\t' + 'start' + '\t\tStart the 128T-Slackbot\n');
 		process.stdout.write('\t' + 'stop' + '\t\tStops the 128T-Slackbot\n');
 		process.stdout.write('\t' + 'restart' + '\t\tRestarts 128T-Slackbot\n');
 		process.stdout.write('\t' + 'status' + '\t\tView status of 128T-Slackbot\n');
+		process.stdout.write('\t' + 'setup' + '\t\tConfigure 128T-Slackbot\n');
 		process.stdout.write('\n');
 	break;
 }

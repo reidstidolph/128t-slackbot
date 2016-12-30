@@ -10,10 +10,10 @@
 //data, and sends data to Slack.
 //
 // Configuration of this app is done using
-// ./t128-slackbot-config.json
+// slackbot-config.json
 //
 
-try {var config = require("../slackbot-config.json");}
+try {var config = require("../cache/.slackbot-config.json");}
 catch(err) {
 	process.stdout.write(`\n${err}\n`);
     process.stdout.write(`

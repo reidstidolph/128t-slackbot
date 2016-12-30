@@ -13,7 +13,7 @@
 // ./t128-slackbot-config.json
 //
 
-try {var config = require("./slackbot-config.json");} // config for slackbot
+try {var config = require("./cache/.slackbot-config.json");} // config for slackbot
 catch(err) {
     process.stdout.write(`\n${err}\n`);
     process.stdout.write(`
