@@ -61,7 +61,7 @@ Usage: ./128t-slackbot {start|stop|restart|status|setup|slacktest|routertest}
 ```
 ## Compatibility
 The 128T-Slackbot should run on almost anything the can run NodeJS (Linux, Windows, Mac, Heroku, etc.), however it has been most used and tested on Linux.
-The 128T-Slackbot is also compatible with 128T 2.0 "Bershire". Older versions are most likely not compatible, and every attempt will be made to add support for future 128T versions as they are released. 
+The 128T-Slackbot is also compatible with 128T 2.0 "Berkshire". Older versions are most likely not compatible, and every attempt will be made to add support for future 128T versions as they are released. 
 
 ## Debug
 If you are needing to debug, logs are written to the `./log` directory. `128t-slackbot.log` contains detailed logging of the code execution. If your 128T-Slackbot stops running due to a crash, it will be logged to the `error.log` file.
