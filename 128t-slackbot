@@ -28,8 +28,8 @@ if (process.argv[2]) {
 
 // open log files
 //
-const log = fs.openSync('./log/128t-slackbot.log', 'a');
-const errorLog = fs.openSync('./log/error.log', 'a');
+const log = fs.openSync(__dirname + '/log/128t-slackbot.log', 'a');
+const errorLog = fs.openSync(__dirname + '/log/error.log', 'a');
 
 // function for reading the 128T-Slackbot pid file, and checking to see
 // if it is running.
