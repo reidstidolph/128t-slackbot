@@ -22,7 +22,7 @@ After you have an Incoming WebHook enabled, these are the key integration settin
 * **Customize Icon**: You can customize this, or use this for an icon: [link](http://i.imgur.com/l30dDHf.png)
 
 ## Installation
-To install the 128T-Slackbot on your host system, us the following steps:
+To install the 128T-Slackbot on your host system, use the following steps:
 
 * Choose a directory on your host system, and git clone from the 128T-Slackbot repository (alternatively you can download from the Bitbucket repository page):
 ```
