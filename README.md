@@ -1,7 +1,7 @@
 # 128T Slackbot #
 *A 128 Technology Community project*
 
-The 128T Slackbot turns your 128T powered network into a self-aware, sentient being, capable of reporting how it is performing via Slack! (except for the sentient, self-aware part)
+The 128T Slackbot turns your 128T powered network into a self-aware, sentient being, capable of reporting how it is performing via Slack!
 
 ## Prerequisites
 The basic components needed for a working 128T-Slackbot are:
