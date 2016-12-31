@@ -1,7 +1,7 @@
-# 128T Slackbot #
+# 128T-Slackbot #
 *A 128 Technology Community project*
 
-The 128T Slackbot turns your 128T powered network into a self-aware, sentient being, capable of reporting how it is performing via Slack!
+The 128T-Slackbot turns your 128T powered network into a self-aware, sentient being, capable of reporting how it is performing via Slack!
 
 ## Prerequisites
 The basic components needed for a working 128T-Slackbot are:
@@ -39,6 +39,7 @@ To set up the 128T-Slackbot, simply run the setup wizard, and follow the prompts
 #!plaintext
 [user@host]$ ./128t-slackbot setup
 ```
+Configuration data is stored in './cache/.slackbot-config.json'. If you want to re-initialize your 128T-Slackbot from scratch, just delete this file.
 
 ## Operation
 Operating the 128T-Slackbot is easy. Run the 128T-Slackbot without any arguments to see the available options.
