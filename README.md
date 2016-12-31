@@ -39,7 +39,7 @@ To set up the 128T-Slackbot, simply run the setup wizard, and follow the prompts
 #!plaintext
 [user@host]$ ./128t-slackbot setup
 ```
-Configuration data is stored in `./cache/.slackbot-config.json`. If you want to re-initialize your 128T-Slackbot from scratch, just delete this file.
+Configuration data is stored in `./cache/.slackbot-config.json`. If you want to re-initialize your 128T-Slackbot and start over from scratch, just delete this file.
 
 ## Operation
 Operating the 128T-Slackbot is easy. Run the 128T-Slackbot without any arguments to see the available options.
