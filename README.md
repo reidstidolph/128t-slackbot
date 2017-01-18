@@ -28,10 +28,9 @@ To install the 128T-Slackbot on your host system, use the following steps:
 ```
 [user@host]$ git clone https://bitbucket.org/rstidolph/128t-slackbot.git
 ```
-* Move into the newly created `128t-slackbot` directory. Make the `128t-slackbot` file executable (if it is not already):
+* Move into the newly created `128t-slackbot` directory. (Make the `128t-slackbot` file executable if it is not already):
 ```
 [user@host]$ cd 128t-slackbot
-[user@host]$ chmod +x ./128t-slackbot
 ```
 ## Configuration
 To set up the 128T-Slackbot, simply run the setup wizard, and follow the prompts.
