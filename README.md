@@ -24,27 +24,25 @@ After you have an Incoming WebHook enabled, these are the key integration settin
 ## Installation
 To install the 128T-Slackbot on your host system, use the following steps:
 
-* Choose a directory on your host system, and git clone from the 128T-Slackbot repository (alternatively you can download from the Bitbucket repository page):
+* Choose a directory on your host system, and git clone from the 128T-Slackbot repository:
 ```
-[user@host]$ git clone https://bitbucket.org/rstidolph/128t-slackbot.git
+$ git clone https://github.com/reidstidolph/128t-slackbot.git
 ```
-* Move into the newly created `128t-slackbot` directory. (Make the `128t-slackbot` file executable if it is not already):
+* Move into the newly created `128t-slackbot` directory:
 ```
-[user@host]$ cd 128t-slackbot
+$ cd 128t-slackbot
 ```
 ## Configuration
 To set up the 128T-Slackbot, simply run the setup wizard, and follow the prompts.
 ```
-#!plaintext
-[user@host]$ ./128t-slackbot setup
+$ ./128t-slackbot setup
 ```
 Configuration data is stored in `./cache/.slackbot-config.json`. If you want to re-initialize your 128T-Slackbot and start over from scratch, just delete this file.
 
 ## Operation
 Operating the 128T-Slackbot is easy. Run the 128T-Slackbot without any arguments to see the available options.
 ```
-#!plaintext
-[user@host]$ ./128t-slackbot 
+$ ./128t-slackbot 
 
 Welcome to 128T-Slackbot! (v1.0.0)
 
